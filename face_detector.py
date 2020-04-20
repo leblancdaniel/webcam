@@ -11,7 +11,7 @@ window = trk.io.WindowWriter("Test Window", fps=True)
 
 script_dir = os.path.dirname(__file__)
 model_path = os.path.join(script_dir, "models")
-osnet_path = os.path.join(model_path, "/osnet075.pth")
+osnet_path = os.path.join(model_path, "osnet075.pth")
 
 class FaceDetector:
     def __init__(self):
