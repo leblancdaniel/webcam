@@ -29,10 +29,15 @@ class FaceDetector:
 
 detector = FaceDetector()
 
+# Visualizer takes the object metadata and draws it to the frame
+visualizer = trk.visualize.Visualizer(box_color=(0, 0, 0, 150),)
+
 prev_frame_time = time.time()
 for image in cam:
     # Detect faces in camera
     image = detector(image)
+    # visualize object metadata
+    image = visualizer(image)
     # write to window
     window.write(image)
     prev_frame_time = time.time()
