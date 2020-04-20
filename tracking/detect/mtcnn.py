@@ -1,11 +1,35 @@
-""" needs citation here """
+# This code copied from https://github.com/timesler/facenet-pytorch/blob/master/models/utils/detect_face.py
+#
+# MIT License
+#
+# Copyright (c) 2019 Timothy Esler
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this
+# software and associated documentation files (the "Software"), to deal in the Software
+# without restriction, including without limitation the rights to use, copy, modify,
+# merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies
+# or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+from pathlib import Path
 
 import torch
 from torch import nn
 import numpy as np
 import os
 
-from .utils.detect_face import detect_face, extract_face
+from tracking import Image
+from .detect_face import detect_face
 
 
 class PNet(nn.Module):
@@ -212,96 +236,6 @@ class MTCNN(nn.Module):
             self.device = device
             self.to(device)
 
-    def forward(self, img, save_path=None, return_prob=False):
-        """Run MTCNN face detection on a PIL image or numpy array. This method performs both
-        detection and extraction of faces, returning tensors representing detected faces rather
-        than the bounding boxes. To access bounding boxes, see the MTCNN.detect() method below.
-        
-        Arguments:
-            img {PIL.Image, np.ndarray, or list} -- A PIL image, np.ndarray, or list.
-        
-        Keyword Arguments:
-            save_path {str} -- An optional save path for the cropped image. Note that when
-                self.post_process=True, although the returned tensor is post processed, the saved
-                face image is not, so it is a true representation of the face in the input image.
-                If `img` is a list of images, `save_path` should be a list of equal length.
-                (default: {None})
-            return_prob {bool} -- Whether or not to return the detection probability.
-                (default: {False})
-        
-        Returns:
-            Union[torch.Tensor, tuple(torch.tensor, float)] -- If detected, cropped image of a face
-                with dimensions 3 x image_size x image_size. Optionally, the probability that a
-                face was detected. If self.keep_all is True, n detected faces are returned in an
-                n x 3 x image_size x image_size tensor with an optional list of detection
-                probabilities. If `img` is a list of images, the item(s) returned have an extra 
-                dimension (batch) as the first dimension.
-        Example:
-        >>> from facenet_pytorch import MTCNN
-        >>> mtcnn = MTCNN()
-        >>> face_tensor, prob = mtcnn(img, save_path='face.png', return_prob=True)
-        """
-
-        # Detect faces
-        with torch.no_grad():
-            batch_boxes, batch_probs = self.detect(img)
-
-        # Determine if a batch or single image was passed
-        batch_mode = True
-        if not isinstance(img, (list, tuple)) and not (isinstance(img, np.ndarray) and len(img.shape) == 4):
-            img = [img]
-            batch_boxes = [batch_boxes]
-            batch_probs = [batch_probs]
-            batch_mode = False
-
-        # Parse save path(s)
-        if save_path is not None:
-            if isinstance(save_path, str):
-                save_path = [save_path]
-        else:
-            save_path = [None for _ in range(len(img))]
-        
-        # Process all bounding boxes and probabilities
-        faces, probs = [], []
-        for im, box_im, prob_im, path_im in zip(img, batch_boxes, batch_probs, save_path):
-            if box_im is None:
-                faces.append(None)
-                probs.append([None] if self.keep_all else None)
-                continue
-
-            if not self.keep_all:
-                box_im = box_im[[0]]
-
-            faces_im = []
-            for i, box in enumerate(box_im):
-                face_path = path_im
-                if path_im is not None and i > 0:
-                    save_name, ext = os.path.splitext(path_im)
-                    face_path = save_name + '_' + str(i + 1) + ext
-
-                face = extract_face(im, box, self.image_size, self.margin, face_path)
-                if self.post_process:
-                    face = fixed_image_standardization(face)
-                faces_im.append(face)
-
-            if self.keep_all:
-                faces_im = torch.stack(faces_im)
-            else:
-                faces_im = faces_im[0]
-                prob_im = prob_im[0]
-            
-            faces.append(faces_im)
-            probs.append(prob_im)
-    
-        if not batch_mode:
-            faces = faces[0]
-            probs = probs[0]
-
-        if return_prob:
-            return faces, probs
-        else:
-            return faces
-
     def detect(self, img, landmarks=False):
         """Detect all faces in PIL image and return bounding boxes and optional facial landmarks.
         This method is used by the forward method and is also useful for face detection tasks
@@ -379,15 +313,3 @@ class MTCNN(nn.Module):
             return boxes, probs, points
 
         return boxes, probs
-
-
-def fixed_image_standardization(image_tensor):
-    processed_tensor = (image_tensor - 127.5) / 128.0
-    return processed_tensor
-
-def prewhiten(x):
-    mean = x.mean()
-    std = x.std()
-    std_adj = std.clamp(min=1.0/(float(x.numel())**0.5))
-    y = (x - mean) / std_adj
-    return y
