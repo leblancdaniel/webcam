@@ -1,5 +1,6 @@
 import torch
 import tracking as trk
+from tracking import Image
 from tracking.detect import FaceMTCNN
 from tracking.annotate import load_osnet
 import time
