@@ -33,13 +33,9 @@ from .detect_face import detect_face
 
 
 class PNet(nn.Module):
-    """MTCNN PNet.
-    
-    Keyword Arguments:
-        pretrained {bool} -- Whether or not to load saved pretrained weights (default: {True})
-    """
+    """ MTCNN PNet """
 
-    def __init__(self, pretrained=True):
+    def __init__(self):
         super().__init__()
 
         self.conv1 = nn.Conv2d(3, 10, kernel_size=3)
@@ -54,11 +50,6 @@ class PNet(nn.Module):
         self.conv4_2 = nn.Conv2d(32, 4, kernel_size=1)
 
         self.training = False
-
-        if pretrained:
-            state_dict_path = os.path.join(os.path.dirname(__file__), '../data/pnet.pt')
-            state_dict = torch.load(state_dict_path)
-            self.load_state_dict(state_dict)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -75,13 +66,9 @@ class PNet(nn.Module):
 
 
 class RNet(nn.Module):
-    """MTCNN RNet.
-    
-    Keyword Arguments:
-        pretrained {bool} -- Whether or not to load saved pretrained weights (default: {True})
-    """
+    """ MTCNN RNet """
 
-    def __init__(self, pretrained=True):
+    def __init__(self):
         super().__init__()
 
         self.conv1 = nn.Conv2d(3, 28, kernel_size=3)
@@ -99,11 +86,6 @@ class RNet(nn.Module):
         self.dense5_2 = nn.Linear(128, 4)
 
         self.training = False
-
-        if pretrained:
-            state_dict_path = os.path.join(os.path.dirname(__file__), '../data/rnet.pt')
-            state_dict = torch.load(state_dict_path)
-            self.load_state_dict(state_dict)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -124,13 +106,9 @@ class RNet(nn.Module):
 
 
 class ONet(nn.Module):
-    """MTCNN ONet.
-    
-    Keyword Arguments:
-        pretrained {bool} -- Whether or not to load saved pretrained weights (default: {True})
-    """
+    """ MTCNN ONet """
 
-    def __init__(self, pretrained=True):
+    def __init__(self):
         super().__init__()
 
         self.conv1 = nn.Conv2d(3, 32, kernel_size=3)
@@ -152,11 +130,6 @@ class ONet(nn.Module):
         self.dense6_3 = nn.Linear(256, 10)
 
         self.training = False
-
-        if pretrained:
-            state_dict_path = os.path.join(os.path.dirname(__file__), '../data/onet.pt')
-            state_dict = torch.load(state_dict_path)
-            self.load_state_dict(state_dict)
 
     def forward(self, x):
         x = self.conv1(x)
