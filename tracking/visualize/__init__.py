@@ -1,1 +1,1 @@
-from . import visualize
+from . import visualizer
