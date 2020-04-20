@@ -1,1 +1,1 @@
-# webcam reader w/ opencv
+# webcam video applications
