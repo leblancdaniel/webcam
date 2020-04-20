@@ -1,4 +1,4 @@
-from io import CamReader, WindowWriter
+import io
 import time
 
 cam = io.CamReader(width=1280, height=720, mirror=True)
