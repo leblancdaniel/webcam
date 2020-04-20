@@ -7,7 +7,7 @@ import time
 import os
 
 cam = trk.io.CamReader(width=1280, height=720, mirror=True)
-window = trk.io.WindowWriter("Test Window", fps=True)
+window = trk.io.WindowWriter("Face Detection Window", fps=True)
 
 script_dir = os.path.dirname(__file__)
 model_path = os.path.join(script_dir, "models")
