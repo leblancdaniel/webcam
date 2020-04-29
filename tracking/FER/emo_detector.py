@@ -36,7 +36,7 @@ class EmotionDetector:
         size_aug = albu.Resize(48, 48)
         img = augment(size_aug, img)
         img = transforms.ToPILImage()(img)
-        img = transforms.Grayscale()(img)
+        #img = transforms.Grayscale()(img)
         # apply TenCrop to Resized + Grayscaled faces and convert ToTensor inputs
         inputs = transform_test(img)
 
