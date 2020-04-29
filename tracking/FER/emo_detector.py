@@ -53,7 +53,7 @@ class EmotionDetector:
         outputs_avg = outputs.view(ncrops, -1).mean(0)  # avg over crops
 
         score = F.softmax(outputs_avg, dim=0)
-        score = int(torch.max(score.data, 0))
+        score = torch.max(score.data, 0)
         _, predicted = torch.max(outputs_avg.data, 0)
         print(score)
         print(predicted)
