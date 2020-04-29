@@ -55,7 +55,7 @@ class EmotionDetector:
         scores = F.softmax(outputs_avg, dim=0)
         max_score, predicted = torch.max(scores.data, 0)
 
-        print("{0}: {1}% confidence".format(class_names[int(predicted)], (int(max_score)*100)))
+        print("{0}: {1}% confidence".format(class_names[int(predicted)], (float(max_score)*100)))
         
     def __call__(self, frame: Image):
         objs = frame.objects
