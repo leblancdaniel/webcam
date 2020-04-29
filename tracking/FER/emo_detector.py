@@ -40,7 +40,7 @@ class EmotionDetector:
         class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
         net = VGG('VGG19')
-        checkpoint = torch.load('../../tracking/FER/PrivateTest_model.t7',     # path to FER model
+        checkpoint = torch.load('../PrivateTest_model.t7',     # path to FER model
             map_location=torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         net.load_state_dict(checkpoint['net'])
         net.eval()
