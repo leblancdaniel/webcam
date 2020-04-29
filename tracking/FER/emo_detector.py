@@ -12,6 +12,9 @@ import torch.nn.functional as F
 from torchvision import transforms
 import albumentations as albu 
 
+script_dir = os.path.dirname(__file__)
+model_path = os.path.join(script_dir, "PrivateTest_model.t7")
+
 class EmotionDetector:
     def __init__(self):
         self.cut_size = 44
@@ -40,7 +43,7 @@ class EmotionDetector:
         class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
         net = VGG('VGG19')
-        checkpoint = torch.load('../PrivateTest_model.t7',     # path to FER model
+        checkpoint = torch.load(model_path,     # path to FER model
             map_location=torch.device("cuda" if torch.cuda.is_available() else "cpu"))
         net.load_state_dict(checkpoint['net'])
         net.eval()
