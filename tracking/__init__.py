@@ -4,3 +4,4 @@ from . import detect
 from . import annotate
 from . import visualize
 from . import track
+from . import FER
