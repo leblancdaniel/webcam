@@ -58,3 +58,10 @@ class EmotionDetector:
         print(predicted)
 
         print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
+        
+    def __call__(self, frame: Image):
+        objs = frame.objects
+        for n in range(len(objs)):
+            self.expression(frame, objs, n)
+
+        return frame
