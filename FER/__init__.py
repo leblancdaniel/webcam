@@ -1,1 +1,1 @@
-from .vgg import VGG
+from . import vgg
