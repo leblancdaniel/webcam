@@ -30,13 +30,12 @@ class EmotionDetector:
             return aug(image=image)['image']
         # face bounding box coordinates as type: integer
         box_ints = objects[index]['box'].astype(int)
-        # crop bounding box from frame, resize to 48x48, convert to Grayscale
+        # crop bounding box from frame, resize to 48x48, convert to Tensor
         crop_aug = albu.Crop(box_ints[0], box_ints[1], box_ints[2], box_ints[3])
         img = augment(crop_aug, frame)
         size_aug = albu.Resize(48, 48)
         img = augment(size_aug, img)
         img = transforms.ToPILImage()(img)
-        #img = transforms.Grayscale()(img)
         # apply TenCrop to Resized + Grayscaled faces and convert ToTensor inputs
         inputs = transform_test(img)
 
@@ -54,7 +53,7 @@ class EmotionDetector:
         outputs_avg = outputs.view(ncrops, -1).mean(0)  # avg over crops
 
         score = F.softmax(outputs_avg, dim=0)
-        score = torch.max(score.data, 0) * 100
+        score = int(torch.max(score.data, 0))
         _, predicted = torch.max(outputs_avg.data, 0)
         print(score)
         print(predicted)
