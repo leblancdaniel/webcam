@@ -52,13 +52,10 @@ class EmotionDetector:
         outputs = net(inputs)
         outputs_avg = outputs.view(ncrops, -1).mean(0)  # avg over crops
 
-        score = F.softmax(outputs_avg, dim=0)
-        score = torch.max(score.data, 0)
-        _, predicted = torch.max(outputs_avg.data, 0)
-        print(score)
-        print(predicted)
+        scores = F.softmax(outputs_avg, dim=0)
+        max_score, predicted = torch.max(scores.data, 0)
 
-        print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
+        print(class_names[int(predicted)], max_score)
         
     def __call__(self, frame: Image):
         objs = frame.objects
