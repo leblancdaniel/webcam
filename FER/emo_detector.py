@@ -4,13 +4,11 @@ Emotion Detector for object tracking pipeline
 import os
 import numpy as np
 
-from PIL import Image
+from tracking import Image
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.autograd import Variable
 from torchvision import transforms
-
 import albumentations as albu 
 import vgg 
 
