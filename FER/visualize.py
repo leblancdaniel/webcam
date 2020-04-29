@@ -48,4 +48,8 @@ score = F.softmax(outputs_avg)
 _, predicted = torch.max(outputs_avg.data, 0)
 print(score)
 print(predicted)
+<<<<<<< HEAD
 print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
+=======
+print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
+>>>>>>> 5ae64ce56ad091b1f6c19b7061014814caf4d644
