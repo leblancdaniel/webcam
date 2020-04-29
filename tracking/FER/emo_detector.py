@@ -5,12 +5,12 @@ import os
 import numpy as np
 
 from tracking import Image
+from tracking.FER import VGG
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import transforms
 import albumentations as albu 
-import vgg 
 
 class EmotionDetector:
     def __init__(self):
