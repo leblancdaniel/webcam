@@ -1,1 +1,2 @@
-from . import vgg
+from .vgg import VGG
+from .emo_detector import EmotionDetector
