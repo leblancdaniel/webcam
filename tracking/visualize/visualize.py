@@ -57,7 +57,7 @@ def draw_text(
 
     # Draw a box behind the text
     if bg_color is not None:
-        text_width, text_height = draw.textsize(
+        text_width, text_height = draw.multiline_textsize(
             text, font=font, spacing=line_spacing
         )
         draw.rectangle(
